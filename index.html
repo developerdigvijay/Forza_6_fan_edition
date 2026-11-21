@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FORZA HORIZON 6 — IGNITE THE GRID</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+  <!-- ============================================
+       CUSTOM CURSOR
+  ============================================ -->
+  <div id="cursor-outer"></div>
+  <div id="cursor-inner"></div>
+  <div id="cursor-glow"></div>
+
+  <!-- ============================================
+       CINEMATIC LOADER
+  ============================================ -->
+  <div id="loader">
+    <div class="loader-bg-grid"></div>
+    <div class="loader-streaks">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="loader-center">
+      <div class="loader-logo">
+        <span class="loader-logo-forza">FORZA</span>
+        <span class="loader-logo-h">HORIZON</span>
+        <span class="loader-logo-6">6</span>
+      </div>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar-track">
+          <div class="loader-bar-fill" id="loaderBar"></div>
+          <div class="loader-bar-glow"></div>
+        </div>
+        <div class="loader-pct" id="loaderPct">0%</div>
+      </div>
+      <div class="loader-tagline" id="loaderTagline">INITIALIZING ENGINE SYSTEMS...</div>
+    </div>
+    <div class="loader-corner tl">◤</div>
+    <div class="loader-corner tr">◥</div>
+    <div class="loader-corner bl">◣</div>
+    <div class="loader-corner br">◢</div>
+  </div>
+
+  <!-- ============================================
+       NAVIGATION
+  ============================================ -->
+  <nav id="nav">
+    <div class="nav-logo">FH<span>6</span></div>
+    <ul class="nav-links">
+      <li><a href="#hero" data-text="HOME">HOME</a></li>
+      <li><a href="#features" data-text="FEATURES">FEATURES</a></li>
+      <li><a href="#cars" data-text="CARS">CARS</a></li>
+      <li><a href="#world" data-text="WORLD">WORLD</a></li>
+      <li><a href="#gallery" data-text="GALLERY">GALLERY</a></li>
+    </ul>
+    <button class="nav-cta" id="startEngine">⚡ START ENGINE</button>
+    <div class="nav-hud-lines">
+      <span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- ============================================
+       HERO SECTION
+  ============================================ -->
+  <section id="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-overlay"></div>
+
+    <!-- Parallax layers -->
+    <div class="parallax-layer" data-depth="0.1" id="pLayer1">
+      <div class="hero-grid-lines"></div>
+    </div>
+    <div class="parallax-layer" data-depth="0.3" id="pLayer2">
+      <div class="hero-speed-lines"></div>
+    </div>
+
+    <div class="hero-content" id="heroContent">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-line"></span>
+        <span class="eyebrow-text">TURN 10 STUDIOS × PLAYGROUND GAMES</span>
+        <span class="eyebrow-line"></span>
+      </div>
+      <h1 class="hero-title">
+        <span class="title-forza" id="titleForza">FORZA</span>
+        <span class="title-horizon" id="titleHorizon">HORIZON</span>
+        <span class="title-6" id="title6">6</span>
+      </h1>
+      <p class="hero-sub" id="heroSub">THE GRID COMES ALIVE</p>
+      <p class="hero-desc" id="heroDesc">500+ cars. 12 open worlds. One engine to rule them all.<br>The most immersive racing universe ever built.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" id="heroCta1">
+          <span class="btn-bg"></span>
+          <span class="btn-text">PLAY NOW</span>
+          <span class="btn-glow"></span>
+        </button>
+        <button class="btn-secondary" id="heroCta2">WATCH TRAILER</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hstat"><span class="hstat-val" data-target="500">0</span><span class="hstat-unit">+</span><span class="hstat-label">CARS</span></div>
+        <div class="hstat-div"></div>
+        <div class="hstat"><span class="hstat-val" data-target="12">0</span><span class="hstat-label">WORLDS</span></div>
+        <div class="hstat-div"></div>
+        <div class="hstat"><span class="hstat-val" data-target="60">0</span><span class="hstat-unit">FPS</span><span class="hstat-label">4K NATIVE</span></div>
+      </div>
+    </div>
+
+    <div class="hero-visual" id="heroVisual">
+      <div class="visual-topline">
+        <span>LIVE RACE DATA</span>
+        <span class="live-dot">● LIVE</span>
+      </div>
+      <div class="visual-stage">
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+        <div class="orbit-scan"></div>
+        <div class="visual-crosshair horizontal"></div>
+        <div class="visual-crosshair vertical"></div>
+        <div class="race-glyph">
+          <span class="glyph-wing left"></span>
+          <span class="glyph-body"></span>
+          <span class="glyph-wing right"></span>
+          <span class="glyph-tail"></span>
+        </div>
+        <div class="telemetry-tag tag-speed">
+          <span>SPEED</span>
+          <strong>312</strong>
+          <small>KM/H</small>
+        </div>
+        <div class="telemetry-tag tag-gear">
+          <span>GEAR</span>
+          <strong>7</strong>
+        </div>
+        <div class="track-marker marker-a"></div>
+        <div class="track-marker marker-b"></div>
+      </div>
+      <div class="visual-footer">
+        <div class="race-location">
+          <span class="location-code">JP / 06</span>
+          <strong>NEON EXPRESSWAY</strong>
+        </div>
+        <div class="race-weather">
+          <span>WEATHER</span>
+          <strong>23° &nbsp; CLEAR</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-hud-br">
+      <div class="hud-rpm">
+        <span class="hud-label">RPM</span>
+        <div class="hud-gauge" id="rpmGauge">
+          <div class="gauge-fill"></div>
+        </div>
+      </div>
+      <div class="hud-speed">
+        <span class="speed-val" id="speedVal">0</span>
+        <span class="speed-unit">KM/H</span>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-arrow"></div>
+      <span>SCROLL TO ACCELERATE</span>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FEATURES SECTION
+  ============================================ -->
+  <section id="features">
+    <div class="section-header">
+      <div class="sh-line"></div>
+      <h2 class="section-title" data-glitch="GAME SYSTEMS">GAME SYSTEMS</h2>
+      <div class="sh-line"></div>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card" data-index="0">
+        <div class="feat-card-border"></div>
+        <div class="feat-icon">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="1.5"/><path d="M24 8v16l8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="24" cy="24" r="4" fill="currentColor"/></svg>
+        </div>
+        <div class="feat-data-overlay">SYS.01</div>
+        <h3>DYNAMIC WEATHER</h3>
+        <p>Real-time storm systems. Ice, rain, fog — every run is unrepeatable. Neural weather engine adapts to your race line.</p>
+        <div class="feat-bar"><div class="feat-bar-fill" style="--w:92%"></div></div>
+        <div class="feat-tags"><span>PHYSICS</span><span>AI-DRIVEN</span></div>
+      </div>
+      <div class="feat-card" data-index="1">
+        <div class="feat-card-border"></div>
+        <div class="feat-icon">
+          <svg viewBox="0 0 48 48" fill="none"><rect x="8" y="8" width="32" height="32" rx="4" stroke="currentColor" stroke-width="1.5"/><path d="M16 24h16M24 16v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="feat-data-overlay">SYS.02</div>
+        <h3>OPEN WORLD 2.0</h3>
+        <p>12 seamlessly connected biomes. Tokyo neon streets to Himalayan passes. No loading screens. Ever.</p>
+        <div class="feat-bar"><div class="feat-bar-fill" style="--w:98%"></div></div>
+        <div class="feat-tags"><span>SEAMLESS</span><span>12 ZONES</span></div>
+      </div>
+      <div class="feat-card" data-index="2">
+        <div class="feat-card-border"></div>
+        <div class="feat-icon">
+          <svg viewBox="0 0 48 48" fill="none"><path d="M24 4l4 8h8l-6 6 2 8-8-4-8 4 2-8-6-6h8z" stroke="currentColor" stroke-width="1.5"/><circle cx="24" cy="32" r="8" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <div class="feat-data-overlay">SYS.03</div>
+        <h3>NEURAL AI RIVALS</h3>
+        <p>Opponents that learn your lines. Drivatar 3.0 powered by 10M+ real player data points per session.</p>
+        <div class="feat-bar"><div class="feat-bar-fill" style="--w:85%"></div></div>
+        <div class="feat-tags"><span>ML-POWERED</span><span>ADAPTIVE</span></div>
+      </div>
+      <div class="feat-card" data-index="3">
+        <div class="feat-card-border"></div>
+        <div class="feat-icon">
+          <svg viewBox="0 0 48 48" fill="none"><path d="M8 40l8-16 8 8 8-12 8 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="feat-data-overlay">SYS.04</div>
+        <h3>TUNING FORGE</h3>
+        <p>500+ parts. Molecular-level suspension tuning. Build a car that handles exactly how your mind sees it.</p>
+        <div class="feat-bar"><div class="feat-bar-fill" style="--w:79%"></div></div>
+        <div class="feat-tags"><span>DEEP-TUNE</span><span>500+ PARTS</span></div>
+      </div>
+      <div class="feat-card feat-card--wide" data-index="4">
+        <div class="feat-card-border"></div>
+        <div class="feat-icon">
+          <svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="16" stroke="currentColor" stroke-width="1.5"/><path d="M24 8C15.16 8 8 15.16 8 24s7.16 16 16 16" stroke="currentColor" stroke-width="2"/><path d="M32 16l8-8M32 32l8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="feat-data-overlay">SYS.05</div>
+        <h3>MULTIPLAYER HORIZON</h3>
+        <p>Up to 72 players in a single open world. Create events, race together, explore. The world is your lobby.</p>
+        <div class="feat-bar"><div class="feat-bar-fill" style="--w:95%"></div></div>
+        <div class="feat-tags"><span>72-PLAYER</span><span>CROSS-PLAY</span><span>LIVE EVENTS</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CAR SHOWCASE
+  ============================================ -->
+  <section id="cars">
+    <div class="section-header">
+      <div class="sh-line"></div>
+      <h2 class="section-title" data-glitch="CAR ROSTER">CAR ROSTER</h2>
+      <div class="sh-line"></div>
+    </div>
+    <p class="section-sub">SELECT YOUR MACHINE</p>
+    <div class="cars-grid">
+      <!-- Car 1 -->
+      <div class="car-card" data-car="0">
+        <div class="car-card-inner">
+          <div class="car-img-wrap">
+            <div class="car-img" style="background: linear-gradient(135deg, #0a0a1a 0%, #1a0030 50%, #0d0d2b 100%)">
+              <div class="car-silhouette car-s1"></div>
+            </div>
+            <div class="car-img-overlay"></div>
+            <div class="car-class-badge">S1 — 900</div>
+          </div>
+          <div class="car-info">
+            <div class="car-make">BUGATTI</div>
+            <div class="car-model">CHIRON SS 300+</div>
+            <div class="car-stats">
+              <div class="cs"><span class="cs-label">SPEED</span><div class="cs-bar"><div class="cs-fill" style="--w:99%"></div></div><span class="cs-val">9.9</span></div>
+              <div class="cs"><span class="cs-label">ACCEL</span><div class="cs-bar"><div class="cs-fill" style="--w:85%"></div></div><span class="cs-val">8.5</span></div>
+              <div class="cs"><span class="cs-label">HANDLING</span><div class="cs-bar"><div class="cs-fill" style="--w:72%"></div></div><span class="cs-val">7.2</span></div>
+              <div class="cs"><span class="cs-label">BRAKING</span><div class="cs-bar"><div class="cs-fill" style="--w:68%"></div></div><span class="cs-val">6.8</span></div>
+            </div>
+            <div class="car-footer">
+              <span class="car-price">16,900,000 CR</span>
+              <button class="car-select-btn">SELECT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Car 2 -->
+      <div class="car-card" data-car="1">
+        <div class="car-card-inner">
+          <div class="car-img-wrap">
+            <div class="car-img" style="background: linear-gradient(135deg, #0a1a0a 0%, #001a10 50%, #0a1a15 100%)">
+              <div class="car-silhouette car-s2"></div>
+            </div>
+            <div class="car-img-overlay"></div>
+            <div class="car-class-badge" style="--badge-color: #00ff88">R — 800</div>
+          </div>
+          <div class="car-info">
+            <div class="car-make">PORSCHE</div>
+            <div class="car-model">911 GT3 RS</div>
+            <div class="car-stats">
+              <div class="cs"><span class="cs-label">SPEED</span><div class="cs-bar"><div class="cs-fill" style="--w:82%; --bar-color:#00ff88"></div></div><span class="cs-val">8.2</span></div>
+              <div class="cs"><span class="cs-label">ACCEL</span><div class="cs-bar"><div class="cs-fill" style="--w:88%; --bar-color:#00ff88"></div></div><span class="cs-val">8.8</span></div>
+              <div class="cs"><span class="cs-label">HANDLING</span><div class="cs-bar"><div class="cs-fill" style="--w:96%; --bar-color:#00ff88"></div></div><span class="cs-val">9.6</span></div>
+              <div class="cs"><span class="cs-label">BRAKING</span><div class="cs-bar"><div class="cs-fill" style="--w:94%; --bar-color:#00ff88"></div></div><span class="cs-val">9.4</span></div>
+            </div>
+            <div class="car-footer">
+              <span class="car-price">1,200,000 CR</span>
+              <button class="car-select-btn">SELECT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Car 3 -->
+      <div class="car-card" data-car="2">
+        <div class="car-card-inner">
+          <div class="car-img-wrap">
+            <div class="car-img" style="background: linear-gradient(135deg, #1a0a0a 0%, #2a0010 50%, #1a0a15 100%)">
+              <div class="car-silhouette car-s3"></div>
+            </div>
+            <div class="car-img-overlay"></div>
+            <div class="car-class-badge" style="--badge-color: #ff3366">S2 — 998</div>
+          </div>
+          <div class="car-info">
+            <div class="car-make">FERRARI</div>
+            <div class="car-model">SF90 STRADALE</div>
+            <div class="car-stats">
+              <div class="cs"><span class="cs-label">SPEED</span><div class="cs-bar"><div class="cs-fill" style="--w:94%; --bar-color:#ff3366"></div></div><span class="cs-val">9.4</span></div>
+              <div class="cs"><span class="cs-label">ACCEL</span><div class="cs-bar"><div class="cs-fill" style="--w:97%; --bar-color:#ff3366"></div></div><span class="cs-val">9.7</span></div>
+              <div class="cs"><span class="cs-label">HANDLING</span><div class="cs-bar"><div class="cs-fill" style="--w:88%; --bar-color:#ff3366"></div></div><span class="cs-val">8.8</span></div>
+              <div class="cs"><span class="cs-label">BRAKING</span><div class="cs-bar"><div class="cs-fill" style="--w:91%; --bar-color:#ff3366"></div></div><span class="cs-val">9.1</span></div>
+            </div>
+            <div class="car-footer">
+              <span class="car-price">4,500,000 CR</span>
+              <button class="car-select-btn">SELECT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Car 4 -->
+      <div class="car-card" data-car="3">
+        <div class="car-card-inner">
+          <div class="car-img-wrap">
+            <div class="car-img" style="background: linear-gradient(135deg, #0a0a1a 0%, #0a1a3a 50%, #0a0a2a 100%)">
+              <div class="car-silhouette car-s4"></div>
+            </div>
+            <div class="car-img-overlay"></div>
+            <div class="car-class-badge" style="--badge-color: #00e5ff">S1 — 900</div>
+          </div>
+          <div class="car-info">
+            <div class="car-make">LAMBORGHINI</div>
+            <div class="car-model">REVUELTO</div>
+            <div class="car-stats">
+              <div class="cs"><span class="cs-label">SPEED</span><div class="cs-bar"><div class="cs-fill" style="--w:91%; --bar-color:#00e5ff"></div></div><span class="cs-val">9.1</span></div>
+              <div class="cs"><span class="cs-label">ACCEL</span><div class="cs-bar"><div class="cs-fill" style="--w:95%; --bar-color:#00e5ff"></div></div><span class="cs-val">9.5</span></div>
+              <div class="cs"><span class="cs-label">HANDLING</span><div class="cs-bar"><div class="cs-fill" style="--w:84%; --bar-color:#00e5ff"></div></div><span class="cs-val">8.4</span></div>
+              <div class="cs"><span class="cs-label">BRAKING</span><div class="cs-bar"><div class="cs-fill" style="--w:87%; --bar-color:#00e5ff"></div></div><span class="cs-val">8.7</span></div>
+            </div>
+            <div class="car-footer">
+              <span class="car-price">3,200,000 CR</span>
+              <button class="car-select-btn">SELECT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Car Modal -->
+  <div id="carModal" class="car-modal">
+    <div class="car-modal-overlay"></div>
+    <div class="car-modal-inner">
+      <button class="modal-close" id="modalClose">✕ CLOSE</button>
+      <div class="modal-content" id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- ============================================
+       WORLD / MAP SECTION
+  ============================================ -->
+  <section id="world">
+    <div class="world-scene">
+      <canvas id="worldCanvas"></canvas>
+      <div class="world-layers">
+        <div class="wl wl-sky"></div>
+        <div class="wl wl-mountains"></div>
+        <div class="wl wl-city"></div>
+        <div class="wl wl-road"></div>
+        <div class="wl wl-fg"></div>
+      </div>
+      <div class="world-content">
+        <div class="section-header">
+          <div class="sh-line"></div>
+          <h2 class="section-title" data-glitch="JAPAN HORIZON">JAPAN HORIZON</h2>
+          <div class="sh-line"></div>
+        </div>
+        <div class="world-scroll-scenes">
+          <div class="world-scene-text" id="ws1">
+            <span class="ws-tag">ZONE 01</span>
+            <h3>TOKYO NEON DISTRICT</h3>
+            <p>Rain-slicked streets, 3AM, 500 horsepower. The city never sleeps. Neither does your throttle.</p>
+          </div>
+          <div class="world-scene-text" id="ws2">
+            <span class="ws-tag">ZONE 07</span>
+            <h3>MOUNTAIN PASS TOUGE</h3>
+            <p>Hairpin after hairpin. The Hakone circuit demands every ounce of skill — or rewards every inch of bravado.</p>
+          </div>
+          <div class="world-scene-text" id="ws3">
+            <span class="ws-tag">ZONE 12</span>
+            <h3>COASTAL EXPRESSWAY</h3>
+            <p>Pacific cliffs. 300km/h. The horizon is your finish line. This is why you race.</p>
+          </div>
+        </div>
+      </div>
+      <div class="light-trails" id="lightTrails"></div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       GALLERY SECTION
+  ============================================ -->
+  <section id="gallery">
+    <div class="section-header">
+      <div class="sh-line"></div>
+      <h2 class="section-title" data-glitch="SCREENSHOT ARCHIVE">SCREENSHOT ARCHIVE</h2>
+      <div class="sh-line"></div>
+    </div>
+    <div class="gallery-grid">
+      <div class="gal-item" data-title="TOKYO DRIFT — 3:47AM" style="--hue:260">
+        <div class="gal-bg gal-bg-1"></div>
+        <div class="gal-overlay"></div>
+        <div class="gal-info"><span>TOKYO DRIFT</span><span>3:47AM</span></div>
+        <div class="gal-zoom-icon">⊕</div>
+      </div>
+      <div class="gal-item gal-item--tall" data-title="SUMMIT CHALLENGE" style="--hue:190">
+        <div class="gal-bg gal-bg-2"></div>
+        <div class="gal-overlay"></div>
+        <div class="gal-info"><span>SUMMIT CHALLENGE</span><span>HAKONE PASS</span></div>
+        <div class="gal-zoom-icon">⊕</div>
+      </div>
+      <div class="gal-item" data-title="NEON OVERTAKE" style="--hue:320">
+        <div class="gal-bg gal-bg-3"></div>
+        <div class="gal-overlay"></div>
+        <div class="gal-info"><span>NEON OVERTAKE</span><span>SHIBUYA</span></div>
+        <div class="gal-zoom-icon">⊕</div>
+      </div>
+      <div class="gal-item gal-item--wide" data-title="COASTAL RUN" style="--hue:200">
+        <div class="gal-bg gal-bg-4"></div>
+        <div class="gal-overlay"></div>
+        <div class="gal-info"><span>COASTAL RUN</span><span>PACIFIC HIGHWAY</span></div>
+        <div class="gal-zoom-icon">⊕</div>
+      </div>
+      <div class="gal-item" data-title="STORM RACING" style="--hue:40">
+        <div class="gal-bg gal-bg-5"></div>
+        <div class="gal-overlay"></div>
+        <div class="gal-info"><span>STORM RACING</span><span>MT. FUJI</span></div>
+        <div class="gal-zoom-icon">⊕</div>
+      </div>
+    </div>
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+      <div class="lightbox-overlay"></div>
+      <div class="lightbox-inner">
+        <div class="lightbox-img" id="lightboxImg"></div>
+        <div class="lightbox-title" id="lightboxTitle"></div>
+        <button class="lightbox-close" id="lightboxClose">✕</button>
+        <div class="lightbox-nav">
+          <button id="lbPrev">‹</button>
+          <button id="lbNext">›</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       TRAILER SECTION
+  ============================================ -->
+  <section id="trailer">
+    <div class="trailer-mask" id="trailerMask"></div>
+    <div class="trailer-content">
+      <div class="section-header">
+        <div class="sh-line"></div>
+        <h2 class="section-title" data-glitch="IGNITION TRAILER">IGNITION TRAILER</h2>
+        <div class="sh-line"></div>
+      </div>
+      <div class="trailer-frame">
+        <div class="trailer-border-animated"></div>
+        <div class="trailer-video-wrap" id="trailerVideoWrap">
+          <div class="trailer-thumb">
+            <div class="trailer-thumb-bg"></div>
+          </div>
+          <button class="trailer-play-btn" id="trailerPlayBtn">
+            <div class="play-ring"></div>
+            <div class="play-ring play-ring-2"></div>
+            <div class="play-icon">▶</div>
+            <span>PLAY TRAILER</span>
+          </button>
+          <div class="trailer-iframe-wrap" id="trailerIframeWrap" style="display:none">
+            <iframe
+              id="trailerIframe"
+              src=""
+              title="Forza Horizon 6 Trailer"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PLATFORMS SECTION
+  ============================================ -->
+  <section id="platforms">
+    <div class="section-header">
+      <div class="sh-line"></div>
+      <h2 class="section-title" data-glitch="PLATFORMS">PLATFORMS</h2>
+      <div class="sh-line"></div>
+    </div>
+    <div class="platforms-grid">
+      <div class="plat-card">
+        <div class="plat-glow"></div>
+        <div class="plat-icon">
+          <svg viewBox="0 0 80 80" fill="none">
+            <rect x="8" y="8" width="64" height="64" rx="12" stroke="currentColor" stroke-width="2"/>
+            <path d="M24 40h32M40 24v32" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="40" cy="40" r="6" fill="currentColor" opacity="0.4"/>
+          </svg>
+        </div>
+        <h3>XBOX SERIES X|S</h3>
+        <p>4K@60 / 1080p@120</p>
+        <div class="plat-badge">OPTIMIZED</div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-glow"></div>
+        <div class="plat-icon">
+          <svg viewBox="0 0 80 80" fill="none">
+            <rect x="8" y="8" width="64" height="64" rx="8" stroke="currentColor" stroke-width="2"/>
+            <rect x="20" y="28" width="40" height="24" rx="4" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="40" cy="40" r="4" fill="currentColor"/>
+          </svg>
+        </div>
+        <h3>PC / WINDOWS 11</h3>
+        <p>Unlimited FPS · Ray Tracing</p>
+        <div class="plat-badge">ULTRA</div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-glow"></div>
+        <div class="plat-icon">
+          <svg viewBox="0 0 80 80" fill="none">
+            <path d="M40 12C24.5 12 12 24.5 12 40s12.5 28 28 28 28-12.5 28-28S55.5 12 40 12z" stroke="currentColor" stroke-width="2"/>
+            <path d="M28 40c0-6.6 5.4-12 12-12s12 5.4 12 12-5.4 12-12 12" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 2"/>
+            <circle cx="40" cy="40" r="4" fill="currentColor"/>
+          </svg>
+        </div>
+        <h3>XBOX CLOUD</h3>
+        <p>Stream anywhere · Any device</p>
+        <div class="plat-badge">CLOUD</div>
+      </div>
+      <div class="plat-card">
+        <div class="plat-glow"></div>
+        <div class="plat-icon">
+          <svg viewBox="0 0 80 80" fill="none">
+            <path d="M40 20L20 60h40L40 20z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M32 44h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>GAME PASS</h3>
+        <p>Day one on Game Pass Ultimate</p>
+        <div class="plat-badge">INCLUDED</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       NEWSLETTER SECTION
+  ============================================ -->
+  <section id="newsletter">
+    <div class="newsletter-wrap">
+      <div class="nl-bg-grid"></div>
+      <div class="nl-glow-orb"></div>
+      <div class="nl-content">
+        <div class="nl-icon">⚡</div>
+        <h2>JOIN THE GRID</h2>
+        <p>Be first. Get exclusive drops, launch alerts, and early access to new car packs.</p>
+        <div class="nl-form" id="nlForm">
+          <div class="nl-input-wrap" id="nlInputWrap">
+            <input type="email" id="nlInput" placeholder="ENTER YOUR EMAIL ADDRESS" autocomplete="off" />
+            <div class="nl-input-line"></div>
+            <div class="nl-input-glow"></div>
+          </div>
+          <button class="nl-submit" id="nlSubmit">
+            <span class="nl-btn-text">ENGAGE</span>
+            <span class="nl-btn-arrow">→</span>
+          </button>
+        </div>
+        <div class="nl-success" id="nlSuccess">
+          <div class="nl-check">
+            <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="28" stroke="currentColor" stroke-width="2" fill="none" class="check-circle"/><path d="M18 30l8 8 16-16" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-mark"/></svg>
+          </div>
+          <p>YOU'RE ON THE GRID. SEE YOU AT THE START LINE.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FOOTER
+  ============================================ -->
+  <footer id="footer">
+    <div class="footer-grid-lines"></div>
+    <div class="footer-top">
+      <div class="footer-logo">
+        <span>FORZA</span>
+        <span class="fl-big">H6</span>
+      </div>
+      <div class="footer-links">
+        <div class="fl-col">
+          <h4>GAME</h4>
+          <a href="#hero">Overview</a>
+          <a href="#cars">Car List</a>
+          <a href="#world">Maps</a>
+          <a href="#features">Gameplay</a>
+        </div>
+        <div class="fl-col">
+          <h4>COMMUNITY</h4>
+          <a href="#cars">Leaderboards</a>
+          <a href="#gallery">Events</a>
+          <a href="https://forums.forza.net/" target="_blank" rel="noopener noreferrer">Forums</a>
+          <a href="https://creators.forza.net/" target="_blank" rel="noopener noreferrer">Creator Hub</a>
+        </div>
+        <div class="fl-col">
+          <h4>SUPPORT</h4>
+          <a href="https://support.forzamotorsport.net/" target="_blank" rel="noopener noreferrer">FAQ</a>
+          <a href="https://news.xbox.com/" target="_blank" rel="noopener noreferrer">Press Kit</a>
+          <a href="https://careers.microsoft.com/" target="_blank" rel="noopener noreferrer">Careers</a>
+          <a href="https://support.xbox.com/" target="_blank" rel="noopener noreferrer">Contact</a>
+        </div>
+      </div>
+      <div class="footer-socials">
+        <a href="https://x.com/ForzaHorizon" target="_blank" rel="noopener noreferrer" class="soc-icon" aria-label="Twitter/X">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@ForzaHorizon" target="_blank" rel="noopener noreferrer" class="soc-icon" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/forzahorizon/" target="_blank" rel="noopener noreferrer" class="soc-icon" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/@forzahorizon" target="_blank" rel="noopener noreferrer" class="soc-icon" aria-label="TikTok">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.13a8.16 8.16 0 004.77 1.52V7.2a4.85 4.85 0 01-1-.51z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Microsoft / Turn 10 Studios · Xbox Game Studios · All Rights Reserved</p>
+      <p class="footer-disclaimer">Fan Concept Site — Not an official Microsoft product</p>
+    </div>
+    <div class="footer-corner-deco"></div>
+  </footer>
+
+  <!-- Engine Start Overlay -->
+  <div id="engineOverlay" class="engine-overlay">
+    <div class="engine-ring r1"></div>
+    <div class="engine-ring r2"></div>
+    <div class="engine-ring r3"></div>
+    <div class="engine-text">ENGINE STARTED</div>
+    <div class="engine-rpm">
+      <div class="erpm-needle" id="erpmNeedle"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
